@@ -253,7 +253,11 @@ function useStoredState(key, fallback) {
   });
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.warn(`Could not save ${key} to local storage`, error);
+    }
   }, [key, value]);
 
   return [value, setValue];
@@ -1230,13 +1234,56 @@ function AdminTable({ items, render, onEdit, onDelete }) {
 function readImage(event, setter) {
   const file = event.target.files?.[0];
   if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    alert('Please choose an image file.');
+    event.target.value = '';
+    return;
+  }
+
   const reader = new FileReader();
-  reader.onload = () => setter(reader.result);
+  reader.onload = () => {
+    if (file.type === 'image/svg+xml') {
+      setter(reader.result);
+      event.target.value = '';
+      return;
+    }
+
+    resizeImage(reader.result)
+      .then((image) => setter(image))
+      .catch(() => setter(reader.result))
+      .finally(() => {
+        event.target.value = '';
+      });
+  };
   reader.readAsDataURL(file);
 }
 
 function isRemoteImage(value) {
   return /^https?:\/\//i.test(value || '');
+}
+
+function resizeImage(source) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      const maxSize = 1400;
+      const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+      const width = Math.max(1, Math.round(image.width * scale));
+      const height = Math.max(1, Math.round(image.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext('2d');
+      if (!context) {
+        reject(new Error('Canvas is not available'));
+        return;
+      }
+      context.drawImage(image, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', 0.82));
+    };
+    image.onerror = reject;
+    image.src = source;
+  });
 }
 
 function readFile(event, setter) {

@@ -5,7 +5,7 @@ const fs = require('fs');
 const config = require('./config');
 
 // Initialize the configured database.
-require('./db');
+const db = require('./db');
 
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
@@ -26,7 +26,14 @@ app.use('/api', profileRoutes);
 app.use('/api', skillsRoutes);
 app.use('/api', experiencesRoutes);
 app.use('/api', projectsRoutes);
-app.get('/api/health', (req, res) => res.json({ ok: true }));
+app.get('/api/health', async (req, res) => {
+  try {
+    await db.execute('SELECT 1');
+    res.json({ ok: true, database: true });
+  } catch (error) {
+    res.status(500).json({ ok: false, database: false, error: error.message });
+  }
+});
 
 if (fs.existsSync(config.frontendDist)) {
   app.use(express.static(config.frontendDist));
@@ -35,6 +42,10 @@ if (fs.existsSync(config.frontendDist)) {
   });
 }
 
-app.listen(config.port, () => {
-  console.log(`Angkor Portfolio API running on port ${config.port}`);
-});
+if (require.main === module) {
+  app.listen(config.port, () => {
+    console.log(`Angkor Portfolio API running on port ${config.port}`);
+  });
+}
+
+module.exports = app;

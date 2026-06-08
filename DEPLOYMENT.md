@@ -34,8 +34,21 @@ The backend serves the built Vite frontend from `angkor-portfolio/frontend/dist`
 
 Vercel uses `vercel.json` from the repository root:
 
-- Install command: `npm install --prefix angkor-portfolio/frontend`
+- Install command: `npm install --prefix angkor-portfolio/backend && npm install --prefix angkor-portfolio/frontend`
 - Build command: `npm --prefix angkor-portfolio/frontend run build`
 - Output directory: `angkor-portfolio/frontend/dist`
 
-This deploys the current portfolio frontend as a static Vite app.
+This deploys the current portfolio frontend as a Vite app and exposes the backend through Vercel functions under `/api`.
+
+Set these Vercel environment variables to connect production to Aiven MySQL:
+
+```text
+DB_CLIENT=mysql
+DB_HOST=your-aiven-host
+DB_PORT=your-aiven-port
+DB_USER=your-aiven-user
+DB_PASS=your-aiven-password
+DB_NAME=your-aiven-database
+DB_SSL=true
+JWT_SECRET=replace-with-a-long-random-secret
+```

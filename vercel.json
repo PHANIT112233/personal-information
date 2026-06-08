@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm install --prefix angkor-portfolio/frontend",
+  "buildCommand": "npm --prefix angkor-portfolio/frontend run build",
+  "outputDirectory": "angkor-portfolio/frontend/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

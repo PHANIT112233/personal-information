@@ -29,3 +29,13 @@ DB_SSL=true
 ```
 
 The backend serves the built Vite frontend from `angkor-portfolio/frontend/dist`.
+
+## Vercel
+
+Vercel uses `vercel.json` from the repository root:
+
+- Install command: `npm install --prefix angkor-portfolio/frontend`
+- Build command: `npm --prefix angkor-portfolio/frontend run build`
+- Output directory: `angkor-portfolio/frontend/dist`
+
+This deploys the current portfolio frontend as a static Vite app.

@@ -689,18 +689,29 @@ h3 {
 }
 
 .project-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
   overflow: hidden;
 }
 
 .project-media {
   display: grid;
-  min-height: 190px;
+  height: clamp(170px, 19vw, 210px);
+  padding: 12px;
   place-items: center;
   background:
     linear-gradient(135deg, rgba(14, 165, 164, 0.16), rgba(37, 99, 235, 0.18)),
     var(--surface-strong);
   color: var(--accent-2);
   font-weight: 800;
+}
+
+.project-media img {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.82);
 }
 
 .project-body,

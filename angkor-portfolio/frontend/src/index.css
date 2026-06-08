@@ -1535,6 +1535,42 @@ textarea:focus {
   gap: 10px;
 }
 
+.media-url-actions {
+  width: 100%;
+}
+
+.url-field {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid #d8dee6;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111827;
+}
+
+.project-image-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.project-image-preview {
+  width: min(360px, 100%);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid #d8dee6;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.project-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .contact-admin-list {
   display: grid;
   gap: 12px;
@@ -2057,6 +2093,10 @@ textarea {
 
   .admin-form,
   .admin-form.stacked {
+    grid-template-columns: 1fr;
+  }
+
+  .project-image-tools {
     grid-template-columns: 1fr;
   }
 

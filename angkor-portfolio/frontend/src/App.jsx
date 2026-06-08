@@ -976,6 +976,9 @@ function ContactManager({ siteContent, setSiteContent, contactMethods, setContac
 }
 
 function MediaManager({ backgroundImage, setBackgroundImage, profileImage, setProfileImage, cvFile, setCvFile }) {
+  const profileImageUrl = isRemoteImage(profileImage) ? profileImage : '';
+  const backgroundImageUrl = isRemoteImage(backgroundImage) ? backgroundImage : '';
+
   return (
     <div className="admin-feature-layout media-manager-layout">
       <div className="manager-card">
@@ -985,10 +988,20 @@ function MediaManager({ backgroundImage, setBackgroundImage, profileImage, setPr
         </div>
         <div className="upload-row">
           <div className="profile-preview">{profileImage ? <img src={profileImage} alt="Profile preview" /> : 'HP'}</div>
-          <label className="upload-btn">
-            Upload profile image
-            <input type="file" accept="image/*" onChange={(event) => readImage(event, setProfileImage)} />
-          </label>
+          <div className="media-actions media-url-actions">
+            <input
+              className="url-field"
+              type="url"
+              value={profileImageUrl}
+              placeholder="Paste profile image link"
+              onChange={(event) => setProfileImage(event.target.value.trim())}
+            />
+            <label className="upload-btn">
+              Upload profile image
+              <input type="file" accept="image/*" onChange={(event) => readImage(event, setProfileImage)} />
+            </label>
+            {profileImage && <button className="admin-top-action danger" type="button" onClick={() => setProfileImage('')}>Remove</button>}
+          </div>
         </div>
       </div>
       <div className="manager-card">
@@ -1021,7 +1034,14 @@ function MediaManager({ backgroundImage, setBackgroundImage, profileImage, setPr
         </div>
         <div className="upload-row">
           <div className="background-preview">{backgroundImage ? <img src={backgroundImage} alt="Background preview" /> : <span>Default</span>}</div>
-          <div className="media-actions">
+          <div className="media-actions media-url-actions">
+            <input
+              className="url-field"
+              type="url"
+              value={backgroundImageUrl}
+              placeholder="Paste background image link"
+              onChange={(event) => setBackgroundImage(event.target.value.trim())}
+            />
             <label className="upload-btn">
               Upload background
               <input type="file" accept="image/*" onChange={(event) => readImage(event, setBackgroundImage)} />
@@ -1111,6 +1131,7 @@ function ExperienceManager({ experiences, setExperiences }) {
 function ProjectManager({ projects, setProjects }) {
   const [form, setForm] = useState({ title: '', type: '', summary: '', image: '' });
   const [editingId, setEditingId] = useState(null);
+  const projectImageUrl = isRemoteImage(form.image) ? form.image : '';
 
   function save(event) {
     event.preventDefault();
@@ -1129,10 +1150,25 @@ function ProjectManager({ projects, setProjects }) {
         <input value={form.title} placeholder="Title" onChange={(event) => setForm({ ...form, title: event.target.value })} />
         <input value={form.type} placeholder="Type" onChange={(event) => setForm({ ...form, type: event.target.value })} />
         <textarea value={form.summary} placeholder="Project summary" onChange={(event) => setForm({ ...form, summary: event.target.value })} />
-        <label className="upload-btn">
-          Upload project image
-          <input type="file" accept="image/*" onChange={(event) => readImage(event, (image) => setForm({ ...form, image }))} />
-        </label>
+        <div className="project-image-tools">
+          <input
+            className="url-field"
+            type="url"
+            value={projectImageUrl}
+            placeholder="Paste project image link"
+            onChange={(event) => setForm({ ...form, image: event.target.value.trim() })}
+          />
+          <label className="upload-btn">
+            Upload project image
+            <input type="file" accept="image/*" onChange={(event) => readImage(event, (image) => setForm({ ...form, image }))} />
+          </label>
+          {form.image && <button className="admin-top-action danger" type="button" onClick={() => setForm({ ...form, image: '' })}>Remove image</button>}
+        </div>
+        {form.image && (
+          <div className="project-image-preview">
+            <img src={form.image} alt="Project preview" />
+          </div>
+        )}
         <button className="primary-btn" type="submit">{editingId ? 'Update' : 'Add'}</button>
       </form>
       <AdminTable
@@ -1197,6 +1233,10 @@ function readImage(event, setter) {
   const reader = new FileReader();
   reader.onload = () => setter(reader.result);
   reader.readAsDataURL(file);
+}
+
+function isRemoteImage(value) {
+  return /^https?:\/\//i.test(value || '');
 }
 
 function readFile(event, setter) {

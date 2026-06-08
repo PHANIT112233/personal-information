@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: hp_portfolio
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  api:
+    build: ./backend
+    ports:
+      - "4000:4000"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: rootpass
+      DB_NAME: hp_portfolio
+      PORT: 4000
+      JWT_SECRET: supersecretjwt
+      UPLOADS_DIR: uploads
+    volumes:
+      - ./backend/uploads:/usr/src/app/uploads
+    depends_on:
+      - db
+
+volumes:
+  db-data:

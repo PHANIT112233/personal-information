@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.vite/
+
+.env
+.env.*
+!.env.example
+
+*.log
+*.err.log
+
+*.db
+*.sqlite
+*.sqlite3
+
+angkor-portfolio/backend/uploads/*
+!angkor-portfolio/backend/uploads/.gitkeep
